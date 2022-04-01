@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Game</title>
+</head>
+<body>
+    <input type="text" id="input">
+    <button id="submit" class="btn-success w-50 h-25">Guess</button>
+    <ul>
+        <li class="d-none" id="a1"><%= localStorage.getItem('artist1')%></li>
+        <li class="d-none" id="a2"><%= localStorage.getItem('artist2')%></li>
+        <li class="d-none" id="a3"><%= localStorage.getItem('artist3')%></li>
+        <li class="d-none" id="a4"><%= localStorage.getItem('artist4')%></li>
+        <li class="d-none" id="a5"><%= localStorage.getItem('artist5')%></li>
+    </ul>    
+</body>
+<script>
+    var a1 = document.getElementById('a1');
+    var a2 = document.getElementById('a2');
+    var a3 = document.getElementById('a3');
+    var a4 = document.getElementById('a4');
+    var a5 = document.getElementById('a5');
+    var submit = document.getElementById('submit');
+    var inputbtn = document.getElementById('input');
+    submit.addEventListener('click', ()=> {
+        if (inputbtn.value == a1.innerText) {
+            a1.classList.remove('d-none');
+        }
+        if (inputbtn.value == a2.innerText) {
+            a2.classList.remove('d-none');
+        }
+        if (inputbtn.value == a3.innerText) {
+            a3.classList.remove('d-none');
+        }
+        if (inputbtn.value == a4.innerText) {
+            a4.classList.remove('d-none');
+        }
+        if (inputbtn.value == a5.innerText) {
+            a5.classList.remove('d-none');
+        }
+    })
+</script>
+</html>
