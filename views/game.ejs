@@ -8,15 +8,34 @@
     <title>Game</title>
 </head>
 <body>
-    <input type="text" id="input">
-    <button id="submit" class="btn-success w-50 h-25">Guess</button>
-    <ul>
-        <li class="d-none" id="a1"><%= localStorage.getItem('artist1')%></li>
-        <li class="d-none" id="a2"><%= localStorage.getItem('artist2')%></li>
-        <li class="d-none" id="a3"><%= localStorage.getItem('artist3')%></li>
-        <li class="d-none" id="a4"><%= localStorage.getItem('artist4')%></li>
-        <li class="d-none" id="a5"><%= localStorage.getItem('artist5')%></li>
-    </ul>    
+
+    <div class="container flex-column d-flex align-items-center">
+        <h2 class="mt-5">Try to guess your top 5 <%= typeOfGuess %> <%= timeRangeString %>! </h2>
+        <input type="text" id="input" class="w-50 h-25 mb-2">
+        <button id="submit" class="btn-success w-50 h-25 mb-2">Guess</button>
+        <button id="show" class="btn-info w-50 h-25 mb-2">Show all</button>
+        <ul class="list-group mb-2">
+            <li class="d-flex list-group-item invisible" id="a1"><%= user_data[0]%></li>
+            <li class="d-flex list-group-item invisible" id="a2"><%= user_data[1]%></li>
+            <li class="d-flex list-group-item invisible" id="a3"><%= user_data[2]%></li>
+            <li class="d-flex list-group-item invisible" id="a4"><%= user_data[3]%></li>
+            <li class="d-flex list-group-item invisible" id="a5"><%= user_data[4]%></li>
+        </ul>
+        <a href="/" class="btn btn-secondary w-50 h-25">Back home</a> 
+    </div>
+
+    <% if (typeOfGuess == 'tracks') { %>
+        <ul>
+            <li class="invisible" id="td1"><%= user_track_data[0]%></li>
+            <li class="invisible" id="td2"><%= user_track_data[1]%></li>
+            <li class="invisible" id="td3"><%= user_track_data[2]%></li>
+            <li class="invisible" id="td4"><%= user_track_data[3]%></li>
+            <li class="invisible" id="td5"><%= user_track_data[4]%></li>
+        </ul>
+
+        <div id="isTracks">1</div>
+    <% } else {%> <div id="isTracks">0</div> <%}%>
+
 </body>
 <script>
     var a1 = document.getElementById('a1');
@@ -24,24 +43,86 @@
     var a3 = document.getElementById('a3');
     var a4 = document.getElementById('a4');
     var a5 = document.getElementById('a5');
+    var isTracks = document.getElementById('isTracks');
+    if (isTracks.textContent == '1') {
+        var td1 = document.getElementById('td1');
+        var td2 = document.getElementById('td2');
+        var td3 = document.getElementById('td3');
+        var td4 = document.getElementById('td4');
+        var td5 = document.getElementById('td5');
+    };
+    var trackAdded = [false, false, false, false, false];
     var submit = document.getElementById('submit');
+    var show = document.getElementById('show');
     var inputbtn = document.getElementById('input');
     submit.addEventListener('click', ()=> {
-        if (inputbtn.value == a1.innerText) {
-            a1.classList.remove('d-none');
+        if (inputbtn.value.toUpperCase() == a1.textContent.toUpperCase()) {
+            a1.classList.remove('invisible');
+            a1.classList.add('list-group-item-success');
+            if (isTracks.textContent == '1') {
+                a1.textContent += " - " + td1.textContent;
+                trackAdded[0] = true;
+            }
         }
-        if (inputbtn.value == a2.innerText) {
-            a2.classList.remove('d-none');
+        if (inputbtn.value.toUpperCase() == a2.textContent.toUpperCase()) {
+            a2.classList.remove('invisible');
+            a2.classList.add('list-group-item-success');
+            if (isTracks.textContent == '1') {
+                a2.textContent += " - " + td2.textContent;
+                trackAdded[1] = true;
+            }
         }
-        if (inputbtn.value == a3.innerText) {
-            a3.classList.remove('d-none');
+        if (inputbtn.value.toUpperCase() == a3.textContent.toUpperCase()) {
+            a3.classList.remove('invisible');
+            a3.classList.add('list-group-item-success');
+            if (isTracks.textContent == '1') {
+                a3.textContent += " - " + td3.textContent;
+                trackAdded[2] = true;
+            }
         }
-        if (inputbtn.value == a4.innerText) {
-            a4.classList.remove('d-none');
+        if (inputbtn.value.toUpperCase() == a4.textContent.toUpperCase()) {
+            a4.classList.remove('invisible');
+            a4.classList.add('list-group-item-success');
+            if (isTracks.textContent == '1') {
+                a4.textContent += " - " + td4.textContent;
+                trackAdded[3] = true;
+            }
         }
-        if (inputbtn.value == a5.innerText) {
-            a5.classList.remove('d-none');
+        if (inputbtn.value.toUpperCase() == a5.textContent.toUpperCase()) {
+            a5.classList.remove('invisible');
+            a5.classList.add('list-group-item-success');
+            if (isTracks.textContent == '1') {
+                a5.textContent += " - " + td5.textContent;
+                trackAdded[4] = true;
+            }
+            
         }
+        inputbtn.value = '';
+    })
+
+    show.addEventListener('click', ()=> {
+        if (isTracks.textContent == '1'){
+            if (!(trackAdded[0])) {
+                a1.textContent += " - " + td1.textContent;
+            }
+            if (!(trackAdded[1])) {
+                a2.textContent += " - " + td2.textContent;
+            }
+            if (!(trackAdded[2])) {
+                a3.textContent += " - " + td3.textContent;
+            }
+            if (!(trackAdded[3])) {
+                a4.textContent += " - " + td4.textContent;
+            }
+            if (!(trackAdded[4])) {
+                a5.textContent += " - " + td5.textContent;
+            }
+        }
+        a1.classList.remove('invisible');
+        a2.classList.remove('invisible');
+        a3.classList.remove('invisible');
+        a4.classList.remove('invisible');
+        a5.classList.remove('invisible');
     })
 </script>
 </html>
