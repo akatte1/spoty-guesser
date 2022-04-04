@@ -4,7 +4,7 @@ const fs = require('fs');
 var querystring = require('querystring');
 
 
-var client_secret = CLIENT_SECRET;
+var client_secret = '020a2844ec5f434db01406ed6a17f0a8';
 var client_id = '0aea7708ec1a404684a40358ee7180e2';
 var redirect_uri = 'http://spoty-guesser.herokuapp.com/callback';
 var timeRange = 'long_term';
