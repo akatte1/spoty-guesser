@@ -1,20 +1,18 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Client Credentials oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#client_credentials_flow
- */
-
 const express = require('express');
 const request = require('request');
+const fs = require('fs');
 var querystring = require('querystring');
 
 
-var client_secret = '020a2844ec5f434db01406ed6a17f0a8'; // Your secret
+var client_secret = CLIENT_SECRET;
 var client_id = '0aea7708ec1a404684a40358ee7180e2';
 var redirect_uri = 'https://spoty-guesser.herokuapp.com/callback';
+var timeRange = 'long_term';
+var timeRangeString = '';
+var typeOfGuess = 'artists';
+
+var user_data = [];
+var user_track_data = [];
 
 var generateRandomString = function(length) {
 var text = '';
@@ -28,7 +26,8 @@ return text;
 
 var app = express();
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public'));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 const port = process.env.PORT || 8888;
 
 if (typeof localStorage === "undefined" || localStorage === null) {
@@ -37,7 +36,14 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 app.get('/', (req, res) => {
-  res.send('Hi');
+  res.render('index');
+})
+
+app.post('/', async (req, res) => {
+  timeRange = await req.body.time;
+  typeOfGuess = await req.body.type;
+  console.log(typeOfGuess)
+  res.redirect('/login');
 })
 
 app.get('/callback', (req, res) => {
@@ -71,20 +77,28 @@ app.get('/callback', (req, res) => {
           refresh_token = body.refresh_token;
 
       var options = {
-        url: 'https://api.spotify.com/v1/me/top/artists',
+        url: 'https://api.spotify.com/v1/me/top/' + typeOfGuess + '?' + querystring.stringify({
+          time_range: timeRange,
+          limit: 5
+        }),
         headers: { 'Authorization': 'Bearer ' + access_token },
         json: true
       };
 
-      // use the access token to access the Spotify Web API
       request.get(options, function(error, response, body) {
         if(!error) {
           const data = body;
-          console.log(data);
           
           for (var i = 0; i<5; i++) {
-            localStorage.setItem("artist" + (i+1),data.items[i].name);
+            if (typeOfGuess == "tracks") {
+              user_data[i] = data.items[i].name;
+              user_track_data[i] = data.items[i].artists[0].name;
+            }
+            else {
+              user_data[i] = data.items[i].name;
+            }
           }
+
           res.redirect('game');
         }
       });
@@ -116,7 +130,38 @@ app.get('/login', function(req, res) {
 });
 
 app.get('/game', (req, res) => {
-  res.render('game');
+
+  switch(timeRange) {
+    case "long_term":
+      timeRangeString = "of all time";
+      break;
+    case "medium_term":
+      timeRangeString = "of the past 6 months";
+      break;
+    case "short_term":
+      timeRangeString = "of the past 4 weeks";
+      break;
+    default:
+      break;
+  }
+
+  console.log(typeOfGuess)
+
+  if (typeOfGuess == 'tracks') {
+    res.render('game', {typeOfGuess: typeOfGuess,
+                        timeRangeString: timeRangeString,
+                        user_data: user_data,
+                        user_track_data, user_track_data
+      
+    })
+  }
+
+  if (typeOfGuess == 'artists') {
+    res.render('game', {typeOfGuess: typeOfGuess,
+      timeRangeString: timeRangeString,
+      user_data: user_data
+    })
+  }
 })
 
 app.listen(port);
